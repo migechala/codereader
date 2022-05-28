@@ -1,0 +1,6 @@
+{
+    "files.autoSave": "afterDelay",
+    "editor.lineNumbers": "relative",
+    "editor.renderLineHighlight": "gutter",
+    "files.insertFinalNewline": false
+}
