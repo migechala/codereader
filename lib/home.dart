@@ -72,10 +72,19 @@ class _HomePageState extends State<HomePage> {
     if (Platform.isAndroid) {
       url = "https://8a1a-66-235-3-1.ngrok.io/api?Query=" + prompt.toString();
     } else {
-      url = "https://c3f8-66-235-3-1.ngrok.io/api?Query=" + prompt.toString();
+      url = "http://127.0.0.1:5000/api?Query=" + prompt.toString();
     }
     final dataP = await getData(url);
     final data = jsonDecode(dataP);
+
+    String? removeTrailingNewLine(String str) {
+      int newLineIndex = str.lastIndexOf("\n");
+      if (str[newLineIndex + 1] != "") {
+        return str;
+      } else {
+        removeTrailingNewLine(str.substring(0, newLineIndex - 1));
+      }
+    }
 
     setState(() {
       if (kDebugMode) {
@@ -89,7 +98,6 @@ class _HomePageState extends State<HomePage> {
       comment = comment.replaceAll("*", "");
       comment = comment.replaceAll("<div", "");
       comment = comment.replaceAll(">", "");
-
       comment = comment.replaceAll("  ", "");
       if (comment.substring(comment.length - 1) != '.') {
         comment = comment.substring(0, comment.lastIndexOf("\n"));
@@ -102,6 +110,8 @@ class _HomePageState extends State<HomePage> {
       comment = comment.replaceAll(sec, "");
       comment = comment.substring(0, 0) + x + comment.substring(1);
       comment = comment.replaceAll("\n\n", "");
+
+      comment = removeTrailingNewLine(comment)!;
 
       comment = bullet + " " + comment;
       comment = comment.replaceAll("\n", "\n" + bullet + " ");
@@ -172,8 +182,6 @@ class _HomePageState extends State<HomePage> {
 
     // prepare the image
     image_lib.Image image = await _fileToImage(imagefile);
-
-    greyscale(image);
 
     var bytes = image.getBytes();
     img64 = base64Encode(bytes);
